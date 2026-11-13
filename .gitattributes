@@ -1,0 +1,2 @@
+# Preserve the bytes covered by SOURCE-MANIFEST.json across Git checkouts.
+* -text

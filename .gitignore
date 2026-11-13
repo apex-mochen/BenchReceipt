@@ -1,0 +1,4 @@
+dist/
+.validation/
+__pycache__/
+*.py[cod]

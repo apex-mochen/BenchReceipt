@@ -1,0 +1,9 @@
+{
+  "benchreceipt_data_kind": "synthetic",
+  "example_kind": "SYNTHETIC demonstration; not a GPU measurement",
+  "num_prompts": 4, "completed": 4, "failed": 0,
+  "gpu": "SYNTHETIC GPU LABEL", "model_id": "SYNTHETIC MODEL",
+  "vllm_version": "SYNTHETIC VERSION", "num_warmups": 0,
+  "ttfts": [0.01, 0.02, 0.03, 0.04],
+  "mean_ttft_ms": 25, "p50_ttft_ms": 25, "p95_ttft_ms": 38.5, "p99_ttft_ms": 39.7
+}
