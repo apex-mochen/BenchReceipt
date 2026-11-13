@@ -1,0 +1,51 @@
+name: Release smoke test
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Published release tag
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  recipient:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - name: Download and verify the public release anonymously
+        shell: bash
+        env:
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          bundle="benchreceipt-${TAG#v}.zip"
+          api="https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/$TAG"
+          base="https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG"
+          fetch() { curl --fail --silent --show-error --location --max-time 30 --retry 2 "$@"; }
+          mkdir received unpacked
+          fetch "$api" > release.json
+          jq -e '.draft == false and .prerelease == false and (.assets | length == 5)' release.json
+          for name in "$bundle" demo.html demo.json demo.md SHA256SUMS; do
+            fetch "$base/$name" --output "received/$name"
+            digest=$(jq -er --arg name "$name" '.assets[] | select(.name == $name) | .digest | select(startswith("sha256:")) | ltrimstr("sha256:")' release.json)
+            printf '%s  %s\n' "$digest" "received/$name" | sha256sum --strict -c -
+          done
+          (cd received && sha256sum --strict -c SHA256SUMS)
+          unzip -q "received/$bundle" -d unpacked
+          cd unpacked
+          python --version
+          python -I -B verify.py
+          python -I -B benchreceipt.pyz --demo --output demo.html
+          python -I -B benchreceipt.pyz --demo --format json --output demo.json
+          python -I -B benchreceipt.pyz --demo --format markdown --output demo.md
+          for name in demo.html demo.json demo.md; do
+            cmp "$name" "../received/$name"
+            printf '%s matches the companion report\n' "$name"
+          done
