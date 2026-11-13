@@ -14,7 +14,7 @@ Download the offline ZIP, the three synthetic example reports and `SHA256SUMS` f
 
 **Minimum Python requirement.** Python 3.11 or newer and its standard library.
 
-The offline bundle's recipient workflow was tested on Windows 11 with Python 3.12.14 and 3.13.14, and Ubuntu 24.04 on WSL 2 with Python 3.12.3. The recipient workflow was not tested on Python 3.11 or other environments.
+Initial local recipient checks used Windows 11 with Python 3.12.14 and 3.13.14, and Ubuntu 24.04 on WSL 2 with Python 3.12.3. See the [Python 3.11 CI results](https://github.com/apex-mochen/BenchReceipt/actions/workflows/ci.yml) and the [public-download checks](https://github.com/apex-mochen/BenchReceipt/actions/workflows/release-smoke.yml) for ongoing verification.
 
 From this source directory, run the following commands.
 
